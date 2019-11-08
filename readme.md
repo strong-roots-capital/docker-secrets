@@ -11,14 +11,23 @@ npm install @strong-roots-capital/docker-secrets
 ## Use
 
 ```typescript
-import { dockerSecrets } from '@strong-roots-capital/docker-secrets'
-// TODO: describe usage
+import { secrets } from '@strong-roots-capital/docker-secrets'
+
+async function main() {
+
+    console.log((await secrets.get('user')).orDefault('Ishmael'))
+    console.log(secrets.getSync('PWD'))
+
+    const getFromRoot = secrets.getFrom('/root/super-secrets-do-not-share')
+
+    console.log(await getFromRoot('launch-codes'))
+    console.log(secrets.getFromSync ('/home/gob') ('illusions'))
+}
+
+main()
 ```
 
 ## Related
 
-TODO
-
-## Acknowledgments
-
-TODO
+- [purify-ts](https://gigobyte.github.io/purify/adts/Maybe)
+- [docker-secrets-nodejs](https://github.com/zhu1230/docker-secrets-nodejs)
