@@ -2,6 +2,9 @@ module.exports = {
     src: [
         './src/docker-secrets.ts',
     ],
+    exclude: [
+        './node_modules/**/*'
+    ],
     mode: 'file',
     includeDeclarations: true,
     tsconfig: 'tsconfig.json',

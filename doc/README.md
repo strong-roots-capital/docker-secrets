@@ -39,5 +39,91 @@ Related
 
 ## Index
 
+### Functions
+
+* [get](#get)
+* [getFrom](#getfrom)
+* [getFromSync](#getfromsync)
+* [getSync](#getsync)
+
 ---
+
+## Functions
+
+<a id="get"></a>
+
+###  get
+
+▸ **get**(secret: *`string`*): `Promise`<`Maybe`<`string`>>
+
+*Defined in [src/docker-secrets.ts:100](https://github.com/strong-roots-capital/docker-secrets/blob/77af4a0/src/docker-secrets.ts#L100)*
+
+Get a secret asynchronously, first checking /run/secrets and then falling-back to environment variables.
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| secret | `string` |
+
+**Returns:** `Promise`<`Maybe`<`string`>>
+
+___
+<a id="getfrom"></a>
+
+###  getFrom
+
+▸ **getFrom**(directory: *`string`*): `getSecretDescribedBy`
+
+*Defined in [src/docker-secrets.ts:108](https://github.com/strong-roots-capital/docker-secrets/blob/77af4a0/src/docker-secrets.ts#L108)*
+
+Get a secret asynchronously, first checking `directory` and then falling-back to environment variables.
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| directory | `string` |
+
+**Returns:** `getSecretDescribedBy`
+
+___
+<a id="getfromsync"></a>
+
+###  getFromSync
+
+▸ **getFromSync**(directory: *`string`*): `getSecretDescribedBy`
+
+*Defined in [src/docker-secrets.ts:124](https://github.com/strong-roots-capital/docker-secrets/blob/77af4a0/src/docker-secrets.ts#L124)*
+
+Get a secret synchronously, first checking `directory` and then falling-back to environment variables.
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| directory | `string` |
+
+**Returns:** `getSecretDescribedBy`
+
+___
+<a id="getsync"></a>
+
+###  getSync
+
+▸ **getSync**(secret: *`string`*): `Maybe`<`string`>
+
+*Defined in [src/docker-secrets.ts:116](https://github.com/strong-roots-capital/docker-secrets/blob/77af4a0/src/docker-secrets.ts#L116)*
+
+Get a secret synchronously, first checking /run/secrets and then falling-back to environment variables.
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| secret | `string` |
+
+**Returns:** `Maybe`<`string`>
+
+___
 

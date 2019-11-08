@@ -97,7 +97,7 @@ function getSecretSync(
  * Get a secret asynchronously, first checking /run/secrets and then
  * falling-back to environment variables.
  */
-async function get(secret: string) {
+export async function get(secret: string) {
     return getSecret (getSecretAsync) (defaultSecretsDir()) (secret)
 }
 
@@ -105,7 +105,7 @@ async function get(secret: string) {
  * Get a secret asynchronously, first checking `directory` and then
  * falling-back to environment variables.
  */
-function getFrom(directory: string) {
+export function getFrom(directory: string) {
     return getSecret (getSecretAsync) (directory)
 }
 
@@ -113,7 +113,7 @@ function getFrom(directory: string) {
  * Get a secret synchronously, first checking /run/secrets and then
  * falling-back to environment variables.
  */
-function getSync(secret: string) {
+export function getSync(secret: string) {
     return getSecret (getSecretSync) (defaultSecretsDir()) (secret)
 }
 
@@ -121,7 +121,7 @@ function getSync(secret: string) {
  * Get a secret synchronously, first checking `directory` and then
  * falling-back to environment variables.
  */
-function getFromSync(directory: string) {
+export function getFromSync(directory: string) {
     return getSecret (getSecretSync) (directory)
 }
 
