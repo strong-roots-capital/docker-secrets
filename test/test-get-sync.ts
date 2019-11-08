@@ -12,20 +12,20 @@ import { secrets } from '../src/docker-secrets'
 test('should get secrets from provided dir', async t => {
     t.deepEqual(
         Just('deadbeef'),
-        await secrets.getFrom ('./test/res') ('secret_a')
+        secrets.getFromSync ('./test/res') ('secret_a')
     )
 })
 
 test('should get known env-var when secret DNE', async t => {
     t.deepEqual(
         Just('deadbeef'),
-        await secrets.get('SECRET_ENV')
+        secrets.getSync('SECRET_ENV')
     )
 })
 
 test('should return Nothing when secret and env-var DNE', async t => {
     t.deepEqual(
         Nothing,
-        await secrets.get('secret_dne')
+        secrets.getSync('secret_dne')
     )
 })

@@ -8,7 +8,8 @@ import * as path from 'path'
 
 import ow from 'ow'
 import Debug from 'debug'
-import { Maybe, Just, Nothing } from 'purify-ts/Maybe'
+import { Maybe, Just } from 'purify-ts/Maybe'
+import { Left, Right, Either } from 'purify-ts/Either'
 import { FutureInstance } from 'fluture'
 import * as Future from 'fluture'
 
@@ -16,17 +17,18 @@ const debug = {
     secrets: Debug('docker-secrets')
 }
 
-/**
- * Exposed API
- */
-interface Secrets {
-    get: (secret: string) => Promise<Maybe<string>>;
-    getFrom: (directory: string) => (secret: string) => Promise<Maybe<string>>;
-}
 
 const defaultSecretsDir = () => '/run/secrets'
 
-const readFile: (a: string) => FutureInstance<NodeJS.ErrnoException, string> =
+const tryCatch = <L, R>(f: () => R): Either<L, R> => {
+    try {
+        return Right(f())
+    } catch (error) {
+        return Left(error)
+    }
+}
+
+const readFile: (path: string) => FutureInstance<NodeJS.ErrnoException, string> =
     Future.encaseP(
         async (file: string) => new Promise<string>(
             (resolve, reject) => fs.readFile(
@@ -37,54 +39,107 @@ const readFile: (a: string) => FutureInstance<NodeJS.ErrnoException, string> =
         )
     )
 
+const readFileSync = (file: string) =>
+    tryCatch<NodeJS.ErrnoException, string>(() => fs.readFileSync(file, 'utf8'))
+
+
 function getEnvironmentVariable(secret: string): Maybe<string> {
     return Maybe.fromNullable(process.env[secret.toUpperCase()])
 }
 
-function getSecret(directory: string) {
+function getSecret<T>(
+    secretGetter: (directory: string, secret: string) => T
+) {
 
-    ow(directory, ow.string)
+    return function getSecretFromDirectory(directory: string) {
 
-    return async function getSecretFromDirectory(secret: string): Promise<Maybe<string>> {
+        ow(directory, ow.string)
 
-        ow(secret, ow.string)
-        debug.secrets(`loading secret '${secret}'`)
+        return function getSecretDescribedBy(secret: string) {
 
-        const secretFile = path.resolve(directory, secret)
+            ow(secret, ow.string)
+            debug.secrets(`loading secret '${secret}'`)
 
-        return new Promise(resolve => {
-            readFile(secretFile)
-                .map(text => text.trim())
-                .map(text => Just(text))
-                .chainRej(() => Future.of(getEnvironmentVariable(secret)))
-                .fork(
-                    () => resolve(Nothing),
-                    (value) => resolve(value)
-                )
-        })
+            return secretGetter(directory, secret)
+        }
     }
 }
 
-/**
- * TODO: document
- */
-// function get(secret: string): Maybe<string>;
-// function get(secret: string): Promise<Maybe<string>>;
-async function get(secret: string): Promise<Maybe<string>> /*| Maybe<string> */  {
-    return getSecret (defaultSecretsDir()) (secret)
+async function getSecretAsync(
+    directory: string,
+    secret: string
+): Promise<Maybe<string>> {
+
+    const secretFile = path.resolve(directory, secret)
+
+    return readFile(secretFile)
+        .map(text => text.trim())
+        .map(text => Just(text))
+        .chainRej(() => Future.of(getEnvironmentVariable(secret)))
+        .promise()
+}
+
+function getSecretSync(
+    directory: string,
+    secret: string
+): Maybe<string> {
+
+    const secretFile = path.resolve(directory, secret)
+
+    return readFileSync(secretFile)
+        .map(text => text.trim())
+        .map(text => Just(text))
+        .mapLeft(() => getEnvironmentVariable(secret))
+        .extract()
 }
 
 /**
- * TODO: document
+ * Get a secret asynchronously, first checking /run/secrets and then
+ * falling-back to environment variables.
+ */
+async function get(secret: string) {
+    return getSecret (getSecretAsync) (defaultSecretsDir()) (secret)
+}
+
+/**
+ * Get a secret asynchronously, first checking `directory` and then
+ * falling-back to environment variables.
  */
 function getFrom(directory: string) {
-    return getSecret(directory)
+    return getSecret (getSecretAsync) (directory)
 }
 
+/**
+ * Get a secret synchronously, first checking /run/secrets and then
+ * falling-back to environment variables.
+ */
+function getSync(secret: string) {
+    return getSecret (getSecretSync) (defaultSecretsDir()) (secret)
+}
+
+/**
+ * Get a secret synchronously, first checking `directory` and then
+ * falling-back to environment variables.
+ */
+function getFromSync(directory: string) {
+    return getSecret (getSecretSync) (directory)
+}
+
+/**
+ * Exposed API
+ */
+interface Secrets {
+    get: (secret: string) => Promise<Maybe<string>>;
+    getSync: (secret: string) => Maybe<string>;
+    getFrom: (directory: string) => (secret: string) => Promise<Maybe<string>>;
+    getFromSync: (directory: string) => (secret: string) => Maybe<string>;
+}
 
 const secrets: Secrets = {
     get,
-    getFrom
+    getFrom,
+    getSync,
+    getFromSync
 }
 
 export { secrets }
