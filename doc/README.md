@@ -56,7 +56,7 @@ Related
 
 ▸ **get**(secret: *`string`*): `Promise`<`Maybe`<`string`>>
 
-*Defined in [src/docker-secrets.ts:100](https://github.com/strong-roots-capital/docker-secrets/blob/77af4a0/src/docker-secrets.ts#L100)*
+*Defined in [docker-secrets.ts:100](https://github.com/strong-roots-capital/docker-secrets/blob/1704d6d/src/docker-secrets.ts#L100)*
 
 Get a secret asynchronously, first checking /run/secrets and then falling-back to environment variables.
 
@@ -75,7 +75,7 @@ ___
 
 ▸ **getFrom**(directory: *`string`*): `getSecretDescribedBy`
 
-*Defined in [src/docker-secrets.ts:108](https://github.com/strong-roots-capital/docker-secrets/blob/77af4a0/src/docker-secrets.ts#L108)*
+*Defined in [docker-secrets.ts:108](https://github.com/strong-roots-capital/docker-secrets/blob/1704d6d/src/docker-secrets.ts#L108)*
 
 Get a secret asynchronously, first checking `directory` and then falling-back to environment variables.
 
@@ -94,7 +94,7 @@ ___
 
 ▸ **getFromSync**(directory: *`string`*): `getSecretDescribedBy`
 
-*Defined in [src/docker-secrets.ts:124](https://github.com/strong-roots-capital/docker-secrets/blob/77af4a0/src/docker-secrets.ts#L124)*
+*Defined in [docker-secrets.ts:124](https://github.com/strong-roots-capital/docker-secrets/blob/1704d6d/src/docker-secrets.ts#L124)*
 
 Get a secret synchronously, first checking `directory` and then falling-back to environment variables.
 
@@ -113,7 +113,7 @@ ___
 
 ▸ **getSync**(secret: *`string`*): `Maybe`<`string`>
 
-*Defined in [src/docker-secrets.ts:116](https://github.com/strong-roots-capital/docker-secrets/blob/77af4a0/src/docker-secrets.ts#L116)*
+*Defined in [docker-secrets.ts:116](https://github.com/strong-roots-capital/docker-secrets/blob/1704d6d/src/docker-secrets.ts#L116)*
 
 Get a secret synchronously, first checking /run/secrets and then falling-back to environment variables.
 
