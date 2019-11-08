@@ -9,6 +9,7 @@ import * as path from 'path'
 import ow from 'ow'
 import Debug from 'debug'
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe'
+import { FutureInstance } from 'fluture'
 import * as Future from 'fluture'
 
 const debug = {
@@ -25,22 +26,26 @@ interface Secrets {
 
 const defaultSecretsDir = () => '/run/secrets'
 
-const readFile = Future.encaseP(
-    (file: string) => new Promise<string>(
-        (resolve, reject) => fs.readFile(
-            file,
-            'utf8',
-            (error, data) => error ? reject(error) : resolve(data)
+const readFile: (a: string) => FutureInstance<NodeJS.ErrnoException, string> =
+    Future.encaseP(
+        async (file: string) => new Promise<string>(
+            (resolve, reject) => fs.readFile(
+                file,
+                'utf8',
+                (error, data) => error ? reject(error) : resolve(data)
+            )
         )
     )
-)
 
+function getEnvironmentVariable(secret: string): Maybe<string> {
+    return Maybe.fromNullable(process.env[secret.toUpperCase()])
+}
 
 function getSecret(directory: string) {
 
     ow(directory, ow.string)
 
-    return function getSecretFromDirectory(secret: string): Promise<Maybe<string>> {
+    return async function getSecretFromDirectory(secret: string): Promise<Maybe<string>> {
 
         ow(secret, ow.string)
         debug.secrets(`loading secret '${secret}'`)
@@ -50,9 +55,11 @@ function getSecret(directory: string) {
         return new Promise(resolve => {
             readFile(secretFile)
                 .map(text => text.trim())
+                .map(text => Just(text))
+                .chainRej(() => Future.of(getEnvironmentVariable(secret)))
                 .fork(
                     () => resolve(Nothing),
-                    (value) => resolve(Just(value))
+                    (value) => resolve(value)
                 )
         })
     }
@@ -63,7 +70,7 @@ function getSecret(directory: string) {
  */
 // function get(secret: string): Maybe<string>;
 // function get(secret: string): Promise<Maybe<string>>;
-function get(secret: string): Promise<Maybe<string>> /*| Maybe<string> */  {
+async function get(secret: string): Promise<Maybe<string>> /*| Maybe<string> */  {
     return getSecret (defaultSecretsDir()) (secret)
 }
 
