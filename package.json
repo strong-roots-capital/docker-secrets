@@ -1,6 +1,6 @@
 {
   "name": "@strong-roots-capital/docker-secrets",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "FP loading of docker secrets, falling back on env vars",
   "main": "dist/src/docker-secrets.js",
   "types": "dist/src/docker-secrets.d.ts",
