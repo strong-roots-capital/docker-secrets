@@ -64,44 +64,6 @@ Get a secret asynchronously, first checking /run/secrets and then falling-back t
 **Returns:** `Promise`<`Maybe`<`string`>>
 
 ___
-<a id="getfrom"></a>
-
-###  getFrom
-
-▸ **getFrom**(directory: *`string`*): `getSecretDescribedBy`
-
-*Defined in [docker-secrets.ts:108](https://github.com/strong-roots-capital/docker-secrets/blob/master/src/docker-secrets.ts#L108)*
-
-Get a secret asynchronously, first checking `directory` and then falling-back to environment variables.
-
-**Parameters:**
-
-| Name | Type |
-| ------ | ------ |
-| directory | `string` |
-
-**Returns:** `getSecretDescribedBy`
-
-___
-<a id="getfromsync"></a>
-
-###  getFromSync
-
-▸ **getFromSync**(directory: *`string`*): `getSecretDescribedBy`
-
-*Defined in [docker-secrets.ts:124](https://github.com/strong-roots-capital/docker-secrets/blob/master/src/docker-secrets.ts#L124)*
-
-Get a secret synchronously, first checking `directory` and then falling-back to environment variables.
-
-**Parameters:**
-
-| Name | Type |
-| ------ | ------ |
-| directory | `string` |
-
-**Returns:** `getSecretDescribedBy`
-
-___
 <a id="getsync"></a>
 
 ###  getSync
@@ -119,5 +81,43 @@ Get a secret synchronously, first checking /run/secrets and then falling-back to
 | secret | `string` |
 
 **Returns:** `Maybe`<`string`>
+
+___
+<a id="getfrom"></a>
+
+###  getFrom
+
+▸ **getFrom**(directory: *`string`*): (secret: *`string`*) => `Promise`<`Maybe`<`string`>>
+
+*Defined in [docker-secrets.ts:108](https://github.com/strong-roots-capital/docker-secrets/blob/master/src/docker-secrets.ts#L108)*
+
+Get a secret asynchronously, first checking `directory` and then falling-back to environment variables.
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| directory | `string` |
+
+**Returns:** (secret: *`string`*) => `Promise`<`Maybe`<`string`>>
+
+___
+<a id="getfromsync"></a>
+
+###  getFromSync
+
+▸ **getFromSync**(directory: *`string`*): (secret: *`string`*) => `Maybe`<`string`>
+
+*Defined in [docker-secrets.ts:124](https://github.com/strong-roots-capital/docker-secrets/blob/master/src/docker-secrets.ts#L124)*
+
+Get a secret synchronously, first checking `directory` and then falling-back to environment variables.
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| directory | `string` |
+
+**Returns:** (secret: *`string`*) => `Maybe`<`string`>
 
 ___
